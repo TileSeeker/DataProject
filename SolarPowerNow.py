@@ -19,6 +19,8 @@ import datetime
 from suntime import Sun, SunTimeException
 
 
+
+
 class SolarPower:
     def __init__(self):
         #Solar Array Data

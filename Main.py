@@ -8,6 +8,8 @@ Created on Fri Apr 23 12:07:36 2021
 import time
 import datetime
 
+import Signals
+
 rooms = {
     "0" : {"roomName" : "outside", "maxCapacity" : 12000000000, "peopleInRoom" : 8000000000, "tempSV" : 0, "tempPV" : 0},
     "1" : {"roomName" : "toilet", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
@@ -42,10 +44,25 @@ last1MTime = None # Previous monthy function
 updateInit = True
 runRoomReservation = False
 
+#COT Konfig
+
+
+
+fireSignal = Signals.Signal("1324", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NjcwIn0.4GshD9I6ZBE0roZzIsjHpIBLasIbH0JLc3TRhJwxJg8")
+parameterUpdate = Signals.Signal("4600", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NjcwIn0.4GshD9I6ZBE0roZzIsjHpIBLasIbH0JLc3TRhJwxJg8")
+
 def fireCheck():
+    return Signals.get()
+
+def updateUserLocation():
+    print("User location Updated")
+    
     pass
 
-def statusChangeCheck():
+def updateGuestData():
+    pass
+
+def bookRoom():
     pass
 
 
@@ -57,31 +74,45 @@ while mainLoop:
     if updateInit:
         pass
     
+    fireSignal.get()
     
-
-    if runRoomReservation:
-        pass
     
+    parmu = str(parameterUpdate.get())
+    print(parmu)
+    
+    # Booking
+    if parmu[0] == 2:
+        bookRoom()
+    
+    # User Location Change
+    if parmu[1] == 2:
+        updateUserLocation()
+        
+    # Guest Status Change    
+    if parmu[2] == 2:
+        updateGuestData()
+    
+        
     # Periodic functions
     # Every 10 minutes
     if (int(currentTime.timestamp()) - 600) > last10mTime:
         last10mTime = int(currentTime.timestamp())
-        print(datetime.datetime.utcfromtimestamp(last10mTime).strftime("%M"))
+        #print(datetime.datetime.utcfromtimestamp(last10mTime).strftime("%M"))
     
     #Hourly
     if currentTime.strftime("%H") != last1hTime:
         last1hTime = currentTime.strftime("%H")
-        print(last1hTime)
+        #print(last1hTime)
     
     #Daily
     if currentTime.strftime("%a") != last1dTime:
         last1dTime = currentTime.strftime("%a")
-        print(last1dTime)
+        #print(last1dTime)
     
     # Monthly
     if currentTime.strftime("%b") != last1MTime:
         last1MTime = currentTime.strftime("%b")
-        print(last1MTime)
+        #print(last1MTime)
     
     
     mainLoop = False
