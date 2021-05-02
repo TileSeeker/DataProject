@@ -49,7 +49,8 @@ class SolarPower:
         self.url = f"https://api.openweathermap.org/data/2.5/weather?lat={self.lat}&lon={self.lon}&appid={self.key}"
         
     def getWeatherDataFromFile(self):
-        data = pd.read_csv("weatherHistoryHourly.csv", dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"])
+        #data = pd.read_csv("weatherHistoryHourly.csv", dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"])
+        data = pd.read_csv("newWeatherData.csv", dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"])
         return data
         
     def weatherCoefficient(self, timestamp = None, date = None, row=None, data=None):
@@ -99,27 +100,61 @@ class SolarPower:
            #data2["generated_solar_power[Wh]"][i] = self.powerCalculationHour(data["dt"][i])
            data["generated_solar_power[Wh]"][i] = self.powerCalculationHour(row = i, data=data)
            #print(f"{data['generated_solar_power[Wh]'][i]}  =   {self.powerCalculationHour(row = i)}")  
-       data.to_csv("test.csv")
+       data.to_csv("newWeatherData.csv", index=False)
         
        return data
 
     def updateHistoricWeatherData(self):
-        oldWeatherData = self.getWeatherDataFromFile()
+    
+        oldWeatherData = self.getWeatherDataFromFile() # Get data
+        lastOldDataTimestamp = oldWeatherData["dt"][len(oldWeatherData["dt"])-1] + 86400 # Last Timestamp
+        lastOldDataDate = datetime.datetime.utcfromtimestamp(lastOldDataTimestamp) # Last Timestamp in datetime format
+        lastOldDataDay = lastOldDataDate.replace(hour = 0)  # Last timestamp day 
         
-        endOfOldData = oldWeatherData["dt"][len(oldWeatherData["dt"])-1]
+        currentDate = datetime.datetime.utcnow()
+        currentDateTimestamp = int(currentDate.timestamp())
         
-        historicUrl = f"http://api.openweathermap.org/data/2.5/onecall/timemachine?lat={self.lat}&lon={self.lon}&dt={endOfOldData}&appid={self.key}"       
+        deltatime = (currentDate - lastOldDataDay)
+        print(deltatime)
         
-        get = requests.get(historicUrl)
-        NewWeatherData = json.loads(get.content)
-        
-        
-        #print(NewWeatherData)
+        df = df2 = pd.DataFrame(columns=oldWeatherData.columns)
         
         
+        for days in range(deltatime.days):
+            
+            print(days)
+            
+            if (deltatime.days - days) < 5:
+                timestamp = int((lastOldDataDay + datetime.timedelta(days=days)).timestamp()) + 7200
+                data = self.getHistoricWeatherDataFromTimestamp(timestamp)
+                df2 = pd.DataFrame(data["hourly"]).rename(columns={"clouds":"clouds_all"})
+                
+                df = df.append(df2).reset_index(drop=True)
+                
+            else:
+                yesterdayTimestamp = int((lastOldDataDay + datetime.timedelta(days=deltatime.days) - datetime.timedelta(days=1)).timestamp())
+                data = self.getHistoricWeatherDataFromTimestamp(yesterdayTimestamp)
+                df2 = pd.DataFrame(data["hourly"]).rename(columns={"clouds":"clouds_all"})
+                
+                timestamp = int((lastOldDataDay + datetime.timedelta(days=days)).timestamp()+7200)
+                #return lastOldDataDay
+                for n in range(len(df2["dt"])):
+                    df2["dt"][n] = timestamp + 3600*n
+                    
+                df = df.append(df2).reset_index(drop=True)
+                
         
+        df["dt"] = pd.to_numeric(df["dt"]).astype(int)
         
-        return NewWeatherData
+        for i in range(len(df["dt"])):
+            
+            df["dt_iso"][i] = str (datetime.datetime.utcfromtimestamp(df["dt"][i])) + " +0000 UTC"
+        
+        newWeatherData = oldWeatherData.append(df)
+        newWeatherData.to_csv("newWeatherData.csv", index=False)
+        
+        return(df)
+        
     
     def getHistoricWeatherDataFromTimestamp(self, timestamp):
         hUrl = f"http://api.openweathermap.org/data/2.5/onecall/timemachine?lat={self.lat}&lon={self.lon}&dt={timestamp}&appid={self.key}"
@@ -158,117 +193,12 @@ class SolarPower:
 # Test function 
 # When the file is run as main, it wil automatically run several functions to make sure the program works
 if __name__ == "__main__":
-    """
-    w = Weather()
-    
-    print(w.getWeatherNow())
-    print(w.getSolarPowerNow())
-        
-
-    s = SolarPower()
-    data = s.getWeatherDataFromFile()
-    timestamp = datetime.date.fromtimestamp(data["dt"][1])
-    print(timestamp)
-    
-    data.duplicated("dt")
-    
-    data2 = s.updateHistoricSolarPowerGeneration()
-    print(data2)
-    
-    lat = 63.42
-    lon = 10.40
-    
-    sun = Sun(lat, lon)
-    
-    today_sr = sun.get_sunrise_time()
-    today_ss = sun.get_sunset_time()
-    
-    print(today_sr)
-    print(today_ss)
-    
-    abd_sr = sun.get_local_sunrise_time(datetime.date.fromtimestamp(1577840400)).replace(tzinfo=None)
-    print(abd_sr)
-    
-    sbd_sr2 = sun.get_local_sunrise_time(datetime.date.fromtimestamp(1578513600)).replace(tzinfo=None)
-    print(sbd_sr2)
-    
-    sr_test = sun.get_local_sunrise_time(datetime.date.fromtimestamp(data["dt"][0]))
-    print(sr_test)
-    print(type(sr_test))
-"""
 
     s = SolarPower()
     d = s.updateHistoricWeatherData()
     data = s.getWeatherDataFromFile() 
-    data2 = pd.DataFrame(columns=data.columns)
-    #print(d)
-    """
-    for day in missing_days:
-        for hour in day:
-            for header in hour
-                data[header] = hour[header]
-    
-    for hour in range(len(d["hourly"])):
-        for header in data.columns:
-            data
-        print(d["hourly"][hour]["dt"])
-    
-    print(d["hourly"][0]["dt"])
-    
-    print(d["hourly"][0])
-    
-    """
-    #d2 = pd.DataFrame(d["hourly"])
-    newData = pd.read_csv("newWeatherData.csv", dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"])
-    
-    t1 = datetime.datetime.utcfromtimestamp(data["dt"][len(data["dt"])-1]).replace(hour=0)
-    print(t1)
-    
-    t4 = datetime.datetime.utcfromtimestamp(data["dt"][len(newData["dt"])-1]).replace(hour=0)
-    print(t4)
-    
-    """
-    print(t1)
-    t2 = datetime.datetime.now()
-    t3 = t2 - t1
-    
-    df3 = pd.DataFrame()
-    for days in range(t3.days):
-        timestamp = int((t1+datetime.timedelta(days=days)).timestamp())
-        w = s.getHistoricWeatherDataFromTimestamp(timestamp)
-        
-        df2 = df.rename(columns={"clouds":"clouds_all"})
-        for t in range(len(df2["dt"])):
-            utc_str = str(datetime.datetime.utcfromtimestamp(int(df2["dt"][t]))) + " +0000 UTC"
-                #print(utc_str)
-                #df2["dt_iso"][t] = utc_str
-        print(f"{days} is out of range")
-        df3 = df3.append(df2).reset_index(drop=True)
-    df3["dt_iso"]=0
-    for t in range(len(df3["dt"])):
-          utc_str = str(datetime.datetime.utcfromtimestamp(int(df3["dt"][t]))) + " +0000 UTC"
-          
-          df3["dt_iso"][t] = utc_str
-    data3 = data.append(df3).reset_index(drop=True)
-    data3.to_csv("newWeatherData2", index=False)
-        
-    
-    
-    #url = f"http://api.openweathermap.org/data/2.5/onecall/timemachine?lat={s.lat}&lon={slon}&dt={timestamp}&appid={s.key}"
-    
-    """
-    """
-    for days in range(1, t3.days):
-        date = t1 + datetime.timedelta(days=days)
-        print(date)
-        timestamp = int(date.timestamp())
-        print(timestamp)
-        url = f"http://api.openweathermap.org/data/2.5/onecall/timemachine?lat={s.lat}&lon={s.lon}&dt={timestamp}&appid={s.key}"
-        get = requests.get(url)
-        NewWeatherData = json.loads(get.content)
-        print(NewWeatherData)
-        #df = pd.DataFrame(NewWeatherData["hourly"])
-        #print(df)      
+    s.updateHistoricSolarPowerGeneration()
+    e = s.getWeatherNow()
+    f = s.getSolarPowerNow()    
 
-    """
     

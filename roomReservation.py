@@ -15,6 +15,21 @@ import pandas as pd
 timeFormat = "%Y %m %d %H %M"
 now = datetime.now().strftime(timeFormat)
 
+rooms = {
+    "0" : {"roomName" : "outside", "maxCapacity" : 12000000000, "peopleInRoom" : 8000000000, "tempSV" : 0, "tempPV" : 0},
+    "1" : {"roomName" : "toilet", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "2" : {"roomName" : "bathroom", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "3" : {"roomName" : "kitchen", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "4" : {"roomName" : "livingroom", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "5" : {"roomName" : "bedroom1", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "6" : {"roomName" : "bedroom2", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "7" : {"roomName" : "bedroom3", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "8" : {"roomName" : "bedroom4", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "9" : {"roomName" : "bedroom5", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+    "10" : {"roomName" : "bedroom6", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
+        }
+
+
 room_capacity = {
     "Bathroom": 1,
     "Kitchen": 3,
@@ -61,7 +76,7 @@ def check_reservations():
     reservations = open_res_from_file()
     return reservations 
 
-def check_availability(data):
+def check_availability(data, rooms):
     """
     data = {
     'room':room, 
@@ -96,38 +111,53 @@ def check_availability(data):
             #print(reservations.iloc[i])
             df = df.loc[reservations["stopTime"] > reservations.iloc[i]["startTime"]]
             #print(df)
-            if len(df.index) < room_capacity[data["room"]]:
+            #if len(df.index) < room_capacity[data["room"]]:
+            if len(df.index) < rooms[data["room"]]["maxCapacity"]:
                 return 2000
             else:
                 return 3000
     
-def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=datetime.today().strftime("%y%m%d"), stopDate_raw=datetime.today().strftime("%y%m%d")):
+def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=datetime.today().strftime("%y%m%d"), stopDate_raw=datetime.today().strftime("%y%m%d"), rooms=rooms):
     """
     Used to reserve the use of a room in the house
-    
-    
 
     Parameters
     ----------
-    room : TYPE
+    room : TYPE String
+        DESCRIPTION: Name or ID of room being booked
+    userID : TYPE Int
         DESCRIPTION.
-    userID : TYPE
+    startTime_raw : Int/Ste in format HHMM
         DESCRIPTION.
-    startTime_raw : TYPE
+    stopTime_raw : Int/Str in format HHMM
         DESCRIPTION.
-    stopTime_raw : TYPE
-        DESCRIPTION.
-    startDate_raw : TYPE, optional
+    startDate_raw : TYPE, optional (Int/Str) in format YYMMDD
         DESCRIPTION. The default is datetime.today().strftime("%y%m%d").
-    stopDate_raw : TYPE, optional
+        
+    stopDate_raw : TYPE, optional (Int/Str) in format YYMMDD
         DESCRIPTION. The default is datetime.today().strftime("%y%m%d").
 
     Returns
     -------
-    TYPE
+    TYPE Int
         DESCRIPTION.
+        Returns RoomBooking Status
+        nxxx:
+            n:
+                1: Reservation compleate
+                2: Reservation compleate, but with overlap
+                3: Reservation failed, fully booked
+                
+            xxx:
+                Reservation ID. If fully boked, xxx = 000
 
     """
+    if len(str(startDate_raw)) != 6:
+        startDate_raw=datetime.today().strftime("%y%m%d")
+        
+    if len(str(stopDate_raw)) != 6:
+        stopDate_raw=datetime.today().strftime("%y%m%d")
+    
     startTime = convert_to_datetime(startDate_raw, startTime_raw)
     stopTime = convert_to_datetime(stopDate_raw, stopTime_raw)
     
@@ -138,7 +168,7 @@ def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=dateti
     'stopTime':stopTime
             }
     
-    status = check_availability(data)
+    status = check_availability(data, rooms)
      
     if status <3000:
         reservations = open_res_from_file()
@@ -148,8 +178,7 @@ def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=dateti
     
         availability_status = status + reservation_pos
         
-        print(reservations)
-        print(availability_status)
+        #print(reservations)
         
         return availability_status
     else:
@@ -160,10 +189,14 @@ def remove_reservation(row_index):
     reservations.iloc[row_index] = [None]*len(reservations.iloc[row_index])
     save_res_to_file(reservations)
  
-"""
-reserve_room('Bathroom', 1, '1130', '1230')
-reserve_room('Kitchen', 2, 0800, )
-
-"""
-
+    
+if __name__ == "__main__":
+    """
+    reserve_room('Bathroom', 1, '1130', '1230')
+    reserve_room('Kitchen', 2, 800, 1000)
+    reserve_room("1", 1, 2100, 2200, 210501)
+    """
+    x = reserve_room("3", 1, 2100, 2200, 0, 0)
+    print(x)
+    remove_reservation(26)
     
