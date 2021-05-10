@@ -45,10 +45,20 @@ def bookRoom(rooms):
     room, userID, startTime, stopTime, startdate, stopdate = get_booking_info()
     roomStatus = roomReservation.reserve_room(room, userID, startTime, stopTime, startdate, stopdate, rooms)
     Signal(Key_Rpiresponse, Token).write(roomStatus)
+    Signal(Key_Enable, Token).write(0)
     return roomStatus
     
 if __name__ == "__main__":
+    print("Retrievig booking info... ")
     print(get_booking_info())
+    
+    print("Booking Room...", end="")
+    print("Status Code: ", end="")
     print(bookRoom(rooms))
+    
+    print("Resetting Enabele Pin... ", end="")
+    print(Signal(Key_Enable, Token).write(0))
+    
+    
     
 

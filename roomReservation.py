@@ -158,6 +158,9 @@ def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=dateti
     if len(str(stopDate_raw)) != 6:
         stopDate_raw=datetime.today().strftime("%y%m%d")
     
+    #print(startTime_raw)
+    #print(stopDate_raw)
+    
     startTime = convert_to_datetime(startDate_raw, startTime_raw)
     stopTime = convert_to_datetime(stopDate_raw, stopTime_raw)
     
@@ -167,6 +170,7 @@ def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=dateti
     'startTime':startTime, 
     'stopTime':stopTime
             }
+    #print(data)
     
     status = check_availability(data, rooms)
      
@@ -196,7 +200,9 @@ if __name__ == "__main__":
     reserve_room('Kitchen', 2, 800, 1000)
     reserve_room("1", 1, 2100, 2200, 210501)
     """
-    x = reserve_room("3", 1, 2100, 2200, 0, 0)
-    print(x)
-    remove_reservation(26)
+    #x = reserve_room("3", 1, 2100, 2200, 0, 0)
+    #print(x)
+    #remove_reservation(26)7
+    
+    reserve_room("3", 1, 1478, 1508, 212, 0)
     
