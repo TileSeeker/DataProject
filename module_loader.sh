@@ -12,17 +12,18 @@ sudo pip3 install selenium
 sudo pip3 install pandas
 sudo pip3 install suntime
 sudo pip3 install datetime
-sudo pip3 install time
-sudo pip3 install json
-sudo pip3 install request
+sudo pip3 install requests
 sudo pip3 install selenium
 sudo pip3 install bs4
 sudo pip3 install matplotlib
 sudo pip3 install PyQt5
 sudo pip3 install PyQt5-tools
 sudo pip3 install sys
+sudo pip3 install numpy
+sudo apt-get install libatlas-base-dev -y
+
 #installer mozilla og mozilla driver + selenium
-FILE=/home/pi/COT/geckodriver-v0.19.1-arm7hf.tar.gz
+FILE=/home/pi/COT/DataProject/geckodriver-v0.19.1-arm7hf.tar.gz
 if [ ! -f "$FILE" ]; then
     wget O https://github.com/mozilla/geckodriver/releases/download/v0.19.1/geckodriver-v0.19.1-arm7hf.tar.gz
     tar -xzvf geckodriver-v0.19.1-arm7hf.tar.gz
@@ -30,5 +31,5 @@ if [ ! -f "$FILE" ]; then
 fi
 
 #run init/main function
-sudo python3 /home/pi/COT/main.py
+sudo python3 /home/pi/COT/DataProject/Main.py
 
