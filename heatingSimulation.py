@@ -14,7 +14,7 @@ defaultRoomParameters = {
     
     
     
-    "0" : {"roomName" : "outside", "maxCapacity" : 12000000000, "peopleInRoom" : 8000000000, "tempSV" : 0, "tempPV" : 0, "area":510064472000, "areaOverlap":{}},
+    "0" : {"roomName" : "outside", "maxCapacity" : 12000000000, "peopleInRoom" : 8000000000, "tempSV" : 0, "tempPV" : 0, "area":0, "areaOverlap":{}},
     "1" : {"roomName" : "toilet", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 28, "tempPV" : 0, "area":2.5, 
            "areaOverlap":{
                "0":{"outside_wall":2.873}, 
@@ -113,87 +113,6 @@ defaultRoomParameters = {
         
     }
 
-
-"""
-defaultAreaOverlap = {
-    "1":{
-        "0":{"outside_wall":3, "window":1.2}, 
-        "2":{"inside_wall":4}, 
-        "3":{"inside_wall":4}, 
-        "4":{"inside_wall":2.37, "door":1.63},
-        },
-    "2":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1.2, "door":0}, 
-        "1":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "3":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "1":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "4":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "5":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "6":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "7":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "8":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "9":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "10":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        },
-    "11":{
-        "0":{"outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0}, 
-        "2":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "3":{"outside_wall":0,"inside_wall":4, "ceiling":4, "floor":4, "window":0, "door":0}, 
-        "4":{"outside_wall":0,"inside_wall":2.37, "ceiling":4, "floor":4, "window":0, "door":1.63},
-        "5":0
-        }
-    }
-"""
 defaultConductivityTable = {
     "outside_wall":31.3, # outside_wall
     "inside_wall":4.1, # inside_wall
@@ -226,9 +145,15 @@ class heatingPowerSimulation():
         
         for i in self.rooms[room_ID]["areaOverlap"]:
             # i = rooms that are in direct connection with the main room
+                print("Room_ID: ", end="")
+                print(i)
 
             #if self.rooms[room_ID]["areaOverlap"][i]:
                 for j in self.rooms[room_ID]["areaOverlap"][i]:
+                    print("Room Name:", end="")
+                    print(j)
+                    
+                    
                     """
                      j = the dict key. The key is named after the area type: 
                         "outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0
@@ -245,17 +170,15 @@ class heatingPowerSimulation():
                         otherRoomTemp = self.getRoomTempByTime(i, timestamp)
                         
                     deltaT = (roomTemp - otherRoomTemp)
+                    print(deltaT)
     
                     energy =  energy + 5.7 * area * deltaT / conductivity
+                    print(energy)
                     
         #Add energy loss through ceiling and floor
         energy = energy + 5.7 * ( (roomTemp - self.groundTemp) * floorArea / floorConductivity  + (roomTemp - self.ceilingTemp) * ceilingArea / ceilingConductivity)
         
-        return energy
-        
-            
-        
-        
+        return energy[0]    
     
     def getRoomTempByTime(self, room_ID, timestamp):
         data = self.historic_weather
@@ -291,25 +214,93 @@ class heatingPowerSimulation():
         data = pd.read_csv("newWeatherData.csv", na_filter=False, dtype={"dt": "int64", "clouds_all":"int64", "temp":"float64"}, parse_dates=["dt_iso"])
         #data = pd.read_csv("newWeatherData.csv",  na_filter=False, skip_blank_lines=True)
         return data
+    def writeWeatherDataToFile(self, data, path="newWeatherData.csv"):
+        data.to_csv(path, index=False)
     
     def updateHeatingSimulationData(self):
-        data = data2 =  self.getWeatherDataFromFile().drop_duplicates(subset=["dt"])
-        for i in self.rooms:
-            # i == room_ID: {"0", "1", "2", ...}
-            #data[f"{self.rooms[i]['roomName']}_heating_power [W/h]"] = self.roomPowerCalc(i, data2["dt"])
-            data[f"{self.rooms[i]['roomName']}_heating_power [W/h]"] = 0
-        """    
-        for i in data["dt"]:
-            for j in self.rooms:
-                data.loc[data["dt"]==i, self.rooms[j]["roomName"]] = self.roomPowerCalc(j, i)
-        """
-        """
-        for i in self.rooms:
-            data[f"{self.rooms[i]['roomName']}_heating_power [W/h]"] = 
-        """
-        return data
-        #maxIndex = len(data["dt"])-1
-        #minIndex = 
+        data = self.getWeatherDataFromFile().drop_duplicates(subset=["dt"]).reset_index(drop=True)
+        roomTempTimetable = self.roomTempTimetable
+        conductivityTable = self.conductivityTable
+        rooms = self.rooms
+        
+        #Temp datafram that will contain the data for the calculations.
+        #All the data is contained here to make the opperation easier to troubleshoot.
+        df = pd.DataFrame()
+        
+        #Timestamp coulumb
+        df["dt"] = data["dt"]
+        
+        #Hour columb
+        df["hour"] = pd.to_datetime(data["dt"], unit='s').dt.strftime("%H").astype(int)
+        
+        #Outside temp
+        df["outside_temp"] = data["temp"] -273.15
+        
+        #Room temp
+        for i in rooms:
+            roomName = rooms[i]['roomName'] 
+            if roomName == "outside":
+                #print("outside -> skip")
+                continue
+            
+            df[f"{roomName}_temp"] = roomTempTimetable[roomName].loc[df["hour"]].reset_index(drop=True)
+            #df[f"{roomName}_temp"] = roomTempTimetable[roomName][df["hour"]].reset_index(drop=True)
+            """
+            #df[f"{roomName}_temp"] = 0
+            
+            for j in range(len(df["hour"])-1):
+                print(j)
+                df[f"{roomName}_temp"][j] = roomTempTimetable[roomName][df["hour"][j]]
+            """
+        
+        for i in rooms:
+            """
+            Tota Power in each room
+            i = ["0", "1", "2" ...]
+            """
+            roomName = rooms[i]['roomName']            
+            ceilingArea = floorArea = rooms[i]["area"]        
+            floorConductivity = conductivityTable["floor"]
+            ceilingConductivity = conductivityTable["ceiling"]
+            #print(f"i == {i}: {rooms[i]['roomName']}")
+            energy = 0
+            energy_raw = 0
+            for j in rooms[i]["areaOverlap"]:
+                """
+                Adjecent rooms
+                j = ["0", "2", "3"]
+                """
+                #print(f"j == {j}")
+                
+                for k in rooms[i]["areaOverlap"][j]:
+                    """
+                     j = the dict key. The key is named after the area type: 
+                        "outside_wall":3,"inside_wall":0, "ceiling":4, "floor":4, "window":1, "door":0
+                                               
+                    The value stored in the  of the area type being calculated:
+                    """
+                    #print(f"\t k == {k}: ")
+                    area = rooms[i]["areaOverlap"][j][k]
+                    conductivity = conductivityTable[k]
+                    deltaT = df[f"{roomName}_temp"] - df[f"{rooms[j]['roomName']}_temp"]
+                    energy_raw = energy_raw + 5.7 * deltaT *  area / conductivity
+                    """
+                    print(f"\t\t conductivity = {conductivity}")
+                    print(f"\t\t area = {area}")
+                    print(f"\t\t deltaT = ")
+                    df[f"deltaT_{roomName}_{rooms[j]['roomName']}"] = df[f"{roomName}_temp"] - df[f"{rooms[j]['roomName']}_temp"]
+                    """
+            energyConCeiling = 5.7 * (df[f"{roomName}_temp"] - self.ceilingTemp) *ceilingArea / ceilingConductivity
+            energyConFloor = 5.7 * (df[f"{roomName}_temp"] - self.groundTemp) * floorArea / floorConductivity
+            energy_raw += energyConCeiling + energyConFloor
+            
+            df[f"{roomName}_heating_power [W/h]"] = abs(energy_raw)
+            data[f"{roomName}_heating_power [W/h]"] = abs(energy_raw)
+        
+        #self.historic_weather = data
+        self.writeWeatherDataToFile(data, "newWeatherData2.csv") 
+
+        return [data, df]
 
     
     def enterDataAfterLastColumnValue(self, column, data, dataset=None,):
@@ -323,17 +314,22 @@ if __name__ == "__main__":
     s = heatingPowerSimulation()
     
     data = s.getWeatherDataFromFile()
-    print(s.roomPowerCalc("1", 1577836800))
-    print(s.getRoomTempByTime("1", 1577836800))
+    #print(s.roomPowerCalc("1", 1577836800))
+    #print(s.getRoomTempByTime("1", 1577836800))
     
-    roomTempTimetable = s.getRoomTempTimetableFromFile()
-    s.getOutsideTempByTime(1577836800)
-    historic_weather = s.getWeatherDataFromFile()
-    x = historic_weather[historic_weather["dt"] == 1578258000]["temp"]
+    #roomTempTimetable = s.getRoomTempTimetableFromFile()
+    #s.getOutsideTempByTime(1577836800)
+    #historic_weather = s.getWeatherDataFromFile()
+    #x = historic_weather[historic_weather["dt"] == 1578258000]["temp"]
     
     
     #data2 = s.updateHeatingSimulationData()
-    df = s.roomPowerCalc("1", data["dt"])
+    
+    #df = s.roomPowerCalc("1", 1577836800)
+    y = s.roomTempTimetable
+    
+    data, x = s.updateHeatingSimulationData()
+    #print(x)
     
 
     
