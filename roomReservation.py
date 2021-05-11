@@ -102,7 +102,7 @@ def check_availability(data, rooms):
     
     
     if reservations.empty:
-        return 1000
+        return 1
     
     else:
         for i in range(len(reservations.index)):
@@ -113,9 +113,9 @@ def check_availability(data, rooms):
             #print(df)
             #if len(df.index) < room_capacity[data["room"]]:
             if len(df.index) < rooms[data["room"]]["maxCapacity"]:
-                return 2000
+                return 2
             else:
-                return 3000
+                return 3
     
 def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=datetime.today().strftime("%y%m%d"), stopDate_raw=datetime.today().strftime("%y%m%d"), rooms=rooms):
     """
@@ -174,19 +174,19 @@ def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=dateti
     
     status = check_availability(data, rooms)
      
-    if status <3000:
+    if status <3:
         reservations = open_res_from_file()
         reservations = reservations.append(data, ignore_index=True)   
         reservation_pos = reservations.index[-1]
         save_res_to_file(reservations)
     
-        availability_status = status + reservation_pos
+        availability_status = status
         
         #print(reservations)
         
         return availability_status
     else:
-        return 3000
+        return 3
     
 def remove_reservation(row_index):
     reservations = open_res_from_file()
@@ -204,5 +204,5 @@ if __name__ == "__main__":
     #print(x)
     #remove_reservation(26)7
     
-    reserve_room("3", 1, 1478, 1508, 212, 0)
+    print(reserve_room("3", 1, 1400, 1508, 212, 0))
     

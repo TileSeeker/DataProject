@@ -160,6 +160,9 @@ def updateInit():
 
 
 mainLoop = True
+
+print("Program Start")
+
 while mainLoop:
     currentTime = datetime.datetime.now()
     
