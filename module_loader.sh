@@ -1,38 +1,34 @@
-#"shebang", tells BASH shell to execute the commands in script
 #!/bin/bash
 
 #update and upgrade system
 sudo apt-get update -y
 sudo apt-get upgrade -y
-#download python3
-sudo apt-get install python3
+#download python3 and pip3
+sudo apt-get install python3 -y
+sudo apt-get install python3-pip -y
+sudo apt-get install iceweasel -y
 #download  python3-libraries
-sudo apt-get install python3-pandas
-sudo apt-get install python3-...
-...
+sudo pip3 install selenium
+sudo pip3 install pandas
+sudo pip3 install suntime
+sudo pip3 install datetime
+sudo pip3 install time
+sudo pip3 install json
+sudo pip3 install request
+sudo pip3 install selenium
+sudo pip3 install bs4
+sudo pip3 install matplotlib
+sudo pip3 install PyQt5
+sudo pip3 install PyQt5-tools
+sudo pip3 install sys
+#installer mozilla og mozilla driver + selenium
+FILE=/home/pi/COT/geckodriver-v0.19.1-arm7hf.tar.gz
+if [ ! -f "$FILE" ]; then
+    wget O https://github.com/mozilla/geckodriver/releases/download/v0.19.1/geckodriver-v0.19.1-arm7hf.tar.gz
+    tar -xzvf geckodriver-v0.19.1-arm7hf.tar.gz
+    sudo cp geckodriver /usr/local/bin/
+fi
 
 #run init/main function
-sudo python3 main.py
-
-#systemd - trenger internet - 
-"""
-[Unit]
-Wants=network-online.target
-After=network.target
-
-[Service]
-Type=forking
-Environment=AUTOSSH_GATETIME=0
-Environment=AUTOSSH_PORT=0
-ExecStart= (path)
-
-ExecStop=/usr/bin/killall -9 autossh
-ExecStop=/usr/bin/killall ssh
-
-##debug
-StandardOutput=console
-
-[Install]
-WantedBy=multi-user.target
-"""
+sudo python3 /home/pi/COT/main.py
 
