@@ -10,6 +10,9 @@ import datetime
 
 import Signals as s
 import booking
+import SolarPowerNow
+import heatingSimulation
+import powerPrices
 
 maxHouseCapacity = 18
 maxGuestsPrPersion = 2
@@ -161,6 +164,8 @@ def updateInit():
 
 mainLoop = True
 
+
+
 print("Program Start")
 
 while mainLoop:
@@ -175,9 +180,9 @@ while mainLoop:
     
     # Check if there are any paramters that have been changed, and need updating
     parmu = str(parameterUpdate.get())
-    print("parmu =", end="")
+    #print("parmu =", end="")
     parmu = "222"
-    print(parmu)
+    #print(parmu)
     
     # Booking
     if parmu[0] == "2":
@@ -209,6 +214,23 @@ while mainLoop:
     #Daily
     if currentTime.strftime("%a") != last1dTime:
         last1dTime = currentTime.strftime("%a")
+        
+        print("Updating Historic Weather data... ", end='')
+        s = SolarPowerNow.SolarPower()
+        newWeatherData = s.updateHistoricWeatherData()
+        s.updateHistoricSolarPowerGeneration()
+        print("Done")
+        
+        print("Updting Historic Heating power Simulation...", end='')
+        hs = heatingSimulation.heatingPowerSimulation()
+        hs.updateHeatingSimulationData()
+        print("Done")
+        
+        print("Updting Historic Power Prices...", end='')
+        pp = powerPrices.powerPrices()
+        pp.updateHistoricData()
+        print("Done")
+        
         #print(last1dTime)
     
     # Monthly

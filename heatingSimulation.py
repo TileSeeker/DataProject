@@ -217,7 +217,7 @@ class heatingPowerSimulation():
     def writeWeatherDataToFile(self, data, path="newWeatherData.csv"):
         data.to_csv(path, index=False)
     
-    def updateHeatingSimulationData(self):
+    def updateHeatingSimulationData(self, returnC=False):
         data = self.getWeatherDataFromFile().drop_duplicates(subset=["dt"]).reset_index(drop=True)
         roomTempTimetable = self.roomTempTimetable
         conductivityTable = self.conductivityTable
@@ -298,18 +298,13 @@ class heatingPowerSimulation():
             data[f"{roomName}_heating_power [W/h]"] = abs(energy_raw)
         
         #self.historic_weather = data
-        self.writeWeatherDataToFile(data, "newWeatherData2.csv") 
-
-        return [data, df]
-
-    
-    def enterDataAfterLastColumnValue(self, column, data, dataset=None,):
-        if not(dataset):
-            dataset = self.getWeatherDataFromFile()
-        pass
-    
+        self.writeWeatherDataToFile(data, "newWeatherData.csv") 
         
+        if returnC:    
+            return [data, df]
+
     
+  
 if __name__ == "__main__":
     s = heatingPowerSimulation()
     
@@ -328,7 +323,7 @@ if __name__ == "__main__":
     #df = s.roomPowerCalc("1", 1577836800)
     y = s.roomTempTimetable
     
-    data, x = s.updateHeatingSimulationData()
+    data, x = s.updateHeatingSimulationData(returnC=True)
     #print(x)
     
 

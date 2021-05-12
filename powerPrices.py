@@ -34,15 +34,17 @@ class powerPrices():
         
         
     def getPowerPricesFromServer(self):
+        
+        # Download power prices xls-file from URL
         r = requests.get(self.dataUrl, stream=True)
         r2 = r.content.decode('utf-8')
         r3 = r2.replace(",", ".")
 
         with open("powerPricesRaw.xls", "w") as f:
             #for chunk in r.iter_content(chunk_size=16*1024):
-            print("Saving xls... ", end="")
+            print("\t Saving xls... ", end="")
             f.write(r3)
-            print("Done")
+            #print("Done")
         
         #Converting tha data to DataFrame
         df = pd.read_html("powerPricesRaw.xls")[0]
@@ -64,30 +66,52 @@ class powerPrices():
         #df.to_csv("excel_to_csv.csv", index=False)
         
     def getWeatherDataFromFile(self):
-        data = pd.read_csv("newWeatherData.csv", na_filter=False, dtype={"dt": "int64", "clouds_all":"int64", "temp":"float64"}, parse_dates=["dt_iso"]).drop_duplicates(subset=["dt"]).reset_index(drop=True)
+        data = pd.read_csv("newWeatherData.csv", na_filter=False, dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"]).drop_duplicates(subset=["dt"]).reset_index(drop=True)
         #data = pd.read_csv("newWeatherData.csv",  na_filter=False, skip_blank_lines=True)
         return data
         
-    def updateHistoricData(self):
+    def writeWeatherDataToFile(self, data, path="newWeatherData.csv"):
+        data.to_csv(path, index=False)
+    
+    def updateHistoricData(self, returnC=False):
         data = self.getPowerPricesFromServer().drop_duplicates(subset=["dt"]).reset_index(drop=True)
+        
+        
+        # Get 'weatherData' from file
+        weatherData = self.getWeatherDataFromFile()
+        # Repaces ',' with '.'. Allws for conversion from str to float 
+        weatherData.loc[:, "power_prices[NOK/MWh]"] = weatherData.loc[:, "power_prices[NOK/MWh]"].astype(str).str.replace(',','.')
+        
+        #Create a bool array that indicates where the DFs will be combined. This is to ensure that the Series are of the same length
         dataMin = data["dt"][0]
         dataMax = data["dt"][len(data["dt"])-1]
         
-        weatherData = self.getWeatherDataFromFile()
         weatherDataMin = weatherData["dt"][0]
         weatherDataMax = weatherData["dt"][len(weatherData["dt"])-1]
-        weatherData["test"] = 100.0
         
         a = (weatherData["dt"] > dataMin) & (weatherData["dt"] < dataMax)
+        #print(len(weatherData[a]))
         b = (data["dt"] > weatherDataMin) & (data["dt"] < weatherDataMax)
-        c = data.loc[b, "Tr.heim"] 
-        d = weatherData.loc[a, "test"]
-        print(c)
-        print(type(c))
-        df = weatherData
-        #df.loc[a, ["test"]] = #data.loc[b, ["Tr.heim"]]
-
-        return [df, a, b, c, d]
+        #print(len(data[b]))
+        
+        #Add the power cost data from 'data' to 'weatherData'.
+        c = data.loc[b, "Tr.heim"]
+        weatherData.loc[a, "power_prices[NOK/MWh]"] = c.to_list() #Convert c to list. This prevents index conflicts
+        
+        #Converts all data in "power price" series to str. Then used 'to_numeric' to convert to float. All values that can't be convertet, are made into NaN values for easier detection.
+        weatherData.loc[:, "power_prices[NOK/MWh]"] = weatherData.loc[:, "power_prices[NOK/MWh]"].astype(str)
+        weatherData.loc[:, "power_prices[NOK/MWh]"] = pd.to_numeric(weatherData.loc[:, "power_prices[NOK/MWh]"], errors='coerce')
+        
+        # Find all indexes where NaN is located. Add the locations to the list 'nanLocation'
+        nanLocation = weatherData.loc[weatherData["power_prices[NOK/MWh]"].isnull(),"power_prices[NOK/MWh]"].index
+        
+        #Replace all NaN values, with the value that comes before it
+        for i in nanLocation:
+            weatherData.loc[i, "power_prices[NOK/MWh]"] = weatherData.loc[i-1,"power_prices[NOK/MWh]"]
+        
+        self.writeWeatherDataToFile(weatherData)
+        if returnC:
+            return weatherData
         
 
 if __name__ == "__main__":
@@ -96,4 +120,4 @@ if __name__ == "__main__":
     
     #r2 = p.getPowerPricesFromServer()
     #ppData = p.getPowerPricesFromServer()
-    newData, a, b, c, d = p.updateHistoricData()
+    newData= p.updateHistoricData(returnC=True)
