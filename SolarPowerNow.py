@@ -94,11 +94,11 @@ class SolarPower:
     
     def updateHistoricSolarPowerGeneration(self):
        data = self.getWeatherDataFromFile()
-       data["generated_solar_power[Wh]"] = 0.1
+       data.loc[:,"generated_solar_power[Wh]"] = 0.1
        
        for i in range(len(data["dt"])):
            #data2["generated_solar_power[Wh]"][i] = self.powerCalculationHour(data["dt"][i])
-           data["generated_solar_power[Wh]"][i] = self.powerCalculationHour(row = i, data=data)
+           data.loc[:,"generated_solar_power[Wh]"].iloc[i] = self.powerCalculationHour(row = i, data=data)
            #print(f"{data['generated_solar_power[Wh]'][i]}  =   {self.powerCalculationHour(row = i)}")  
        data.to_csv("newWeatherData.csv", index=False)
         
@@ -115,14 +115,12 @@ class SolarPower:
         currentDateTimestamp = int(currentDate.timestamp())
         
         deltatime = (currentDate - lastOldDataDay)
-        print(deltatime)
         
         df = df2 = pd.DataFrame(columns=oldWeatherData.columns)
         
         
         for days in range(deltatime.days):
             
-            print(days)
             
             if (deltatime.days - days) < 5:
                 timestamp = int((lastOldDataDay + datetime.timedelta(days=days)).timestamp()) + 7200
@@ -144,11 +142,11 @@ class SolarPower:
                 df = df.append(df2).reset_index(drop=True)
                 
         
-        df["dt"] = pd.to_numeric(df["dt"]).astype(int)
+        df.loc[:,"dt"] = pd.to_numeric(df["dt"]).astype(int)
         
         for i in range(len(df["dt"])):
             
-            df["dt_iso"][i] = str (datetime.datetime.utcfromtimestamp(df["dt"][i])) + " +0000 UTC"
+            df.loc[:,"dt_iso"].iloc[i] = str (datetime.datetime.utcfromtimestamp(df["dt"][i])) + " +0000 UTC"
         
         newWeatherData = oldWeatherData.append(df)
         newWeatherData.to_csv("newWeatherData.csv", index=False)
@@ -195,6 +193,7 @@ class SolarPower:
 if __name__ == "__main__":
 
     s = SolarPower()
+
     d = s.updateHistoricWeatherData()
     data = s.getWeatherDataFromFile() 
     s.updateHistoricSolarPowerGeneration()
