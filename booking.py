@@ -37,8 +37,12 @@ def get_booking_info():
     userID = Signal(Key_ID, Token).get()
     starttime = Signal(Key_starttime, Token).get()
     stoptime = Signal(Key_stoptime, Token).get()
-    startdate = Signal(Key_startdate, Token).get()
-    stopdate = Signal(Key_stopdate, Token).get()
+    startdate = int(Signal(Key_startdate, Token).get())
+    stopdate = int(Signal(Key_stopdate, Token).get())
+    
+    if stopdate == 0:
+        stopdate = startdate
+    
     return room, userID, starttime, stoptime, startdate, stopdate
 
 def bookRoom(rooms):
