@@ -46,24 +46,37 @@ class kwhbruker(QtWidgets.QMainWindow, Ui_kwh_brukere):
     def __init__(self, parent=None):
         super(kwhbruker,self).__init__(parent)
         self.setupUi(self)
+        self.dateedit1.setMinimumDate(d)
+        self.dateedit_2.setMinimumDate(d)
         self.back.clicked.connect(self.hide)
         self.graph.clicked.connect(self.user_sel)
        
     def user_sel(self):
-        if self.checkBox.isChecked:
-            self.graph_nokb("1")
-        if self.checkBox_2.isChecked:
-            self.graph_nokb("2")
-        if self.checkBox_3.isChecked:
-            self.graph_nokb("3")
-        if self.checkBox_4.isChecked:
-            self.graph_nokb("4")
-        if self.checkBox_5.isChecked:
-            self.graph_nokb("5")
-        if self.checkBox_6.isChecked:
-            self.graph_nokb("6")
-
-    def graph_nokb(self, value):
+        if self.checkBox.isChecked() == True:
+            self.graph_kwhb("1")
+        else:
+            pass
+        if self.checkBox_2.isChecked() == True:
+            self.graph_kwhb("2")
+        else:
+            pass
+        if self.checkBox_3.isChecked() == True:
+            self.graph_kwhb("3")
+        else:
+            pass
+        if self.checkBox_4.isChecked() == True:
+            self.graph_kwhb("4")
+        else:
+            pass
+        if self.checkBox_5.isChecked() == True:
+            self.graph_kwhb("5")
+        else:
+            pass
+        if self.checkBox_6.isChecked() == True:
+            self.graph_kwhb("6")
+        else:
+            pass
+    def graph_kwhb(self, value):
         start_dato = self.dateedit1.date().toString("dd.MM.yyyy")
         stop_dato = self.dateedit_2.date().toString("dd.MM.yyyy")        
         start_dato_ts = int(datetime.datetime.strptime(start_dato, '%d.%m.%Y').timestamp())
@@ -86,6 +99,8 @@ class kwhfelles(QtWidgets.QMainWindow, Ui_kwh_felles):
     def __init__(self, parent=None):
         super(kwhfelles,self).__init__(parent)
         self.setupUi(self)
+        self.dateedit1.setMinimumDate(d)
+        self.dateedit_2.setMinimumDate(d)
         self.back.clicked.connect(self.hide)
         self.graph.clicked.connect(self.graph_whf)
 
@@ -111,29 +126,44 @@ class NOKbruker(QtWidgets.QMainWindow, Ui_NOK_brukere):
     def __init__(self, parent=None):
         super(NOKbruker,self).__init__(parent)
         self.setupUi(self)
+        self.dateedit1.setMinimumDate(d)
+        self.dateedit_NOKb2.setMinimumDate(d)
         self.back.clicked.connect(self.hide)
         self.graph.clicked.connect(self.user_sel)
        
     def user_sel(self):
-        if self.checkBox.isChecked:
+        if self.checkBox.isChecked() == True:
             self.graph_nokb("1")
-        if self.checkBox_2.isChecked:
+        else:
+            pass
+        if self.checkBox_2.isChecked() == True:
             self.graph_nokb("2")
-        if self.checkBox_3.isChecked:
+        else:
+            pass
+        if self.checkBox_3.isChecked() == True:
             self.graph_nokb("3")
-        if self.checkBox_4.isChecked:
+        else:
+            pass
+        if self.checkBox_4.isChecked() == True:
             self.graph_nokb("4")
-        if self.checkBox_5.isChecked:
+        else:
+            pass
+        if self.checkBox_5.isChecked() == True:
             self.graph_nokb("5")
-        if self.checkBox_6.isChecked:
+        else:
+            pass
+        if self.checkBox_6.isChecked() == True:
             self.graph_nokb("6")
+        else:
+            pass
+        
 
     def graph_nokb(self, value):
         start_dato = self.dateedit1.date().toString("dd.MM.yyyy")
-        stop_dato = self.dateedit_2.date().toString("dd.MM.yyyy")        
+        stop_dato = self.dateedit_NOKb2.date().toString("dd.MM.yyyy")        
         start_dato_ts = int(datetime.datetime.strptime(start_dato, '%d.%m.%Y').timestamp())
         stop_dato_ts = int(datetime.datetime.strptime(stop_dato, '%d.%m.%Y').timestamp())
-        col = "User"+ value + "NOK"
+        col = "User"+ value + "_NOK"
         data = pd.read_csv("newWeatherData.csv", na_filter=False, dtype={"dt": "int64",col:"float64"}, 
                     parse_dates=["dt_iso"]).drop_duplicates(subset=["dt"]).reset_index(drop=True)
         data = data[(data["dt"] >= start_dato_ts) & (data["dt"] <= stop_dato_ts)]
@@ -151,6 +181,8 @@ class NOKfelles(QtWidgets.QMainWindow, Ui_NOK_felles):
     def __init__(self, parent=None):
         super(NOKfelles,self).__init__(parent)
         self.setupUi(self)
+        self.dateedit1.setMinimumDate(d)
+        self.dateedit_2.setMinimumDate(d)
         self.back.clicked.connect(self.hide)
         self.graph.clicked.connect(self.graph_nokf)
 
