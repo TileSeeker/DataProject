@@ -107,7 +107,7 @@ class SolarPower:
     def updateHistoricWeatherData(self):
     
         oldWeatherData = self.getWeatherDataFromFile() # Get data
-        lastOldDataTimestamp = oldWeatherData["dt"][len(oldWeatherData["dt"])-1] + 86400 # Last Timestamp
+        lastOldDataTimestamp = oldWeatherData.loc[:,"dt"].iloc[len(oldWeatherData["dt"])-1] + 86400 # Last Timestamp
         lastOldDataDate = datetime.datetime.utcfromtimestamp(lastOldDataTimestamp) # Last Timestamp in datetime format
         lastOldDataDay = lastOldDataDate.replace(hour = 0)  # Last timestamp day 
         

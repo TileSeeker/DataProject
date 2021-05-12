@@ -182,15 +182,14 @@ while mainLoop:
     
     # Check if there are any paramters that have been changed, and need updating
     parmu = str(parameterUpdate.get())
-    #print("parmu =", end="")
-    parmu = "222"
-    #print(parmu)
+    print("parmu =", end="")
+    #parmu = "112"
+    print(parmu)
     
     # Booking
     if parmu[0] == "2":
         bookRoom()
 
-    
     # User Location Change
     if parmu[1] == "2":
         updateUserLocation()
@@ -198,6 +197,7 @@ while mainLoop:
     # Guest Status Change    
     if parmu[2] == "2":
         updateGuestData()
+        pass
         
     if parmu != "111":
         parameterUpdate.write(111)
