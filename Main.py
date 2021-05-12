@@ -13,6 +13,7 @@ import booking
 import SolarPowerNow
 import heatingSimulation
 import powerPrices
+import time_update
 
 maxHouseCapacity = 18
 maxGuestsPrPersion = 2
@@ -41,6 +42,7 @@ users = {
     }
 
 # Defining time function
+last1mTime = 0# Previous 10m function
 last10mTime = 0# Previous 10m function
 last1hTime = None # Previous hourly function
 last1dTime = None # Previous daily function
@@ -201,6 +203,14 @@ while mainLoop:
         parameterUpdate.write(111)
            
     # Periodic functions
+    # Every min
+    if (int(currentTime.timestamp()) - 60) > last1mTime:
+        last1mTime = int(currentTime.timestamp())
+        
+        print("Updating Current Time... ", end='')
+        time_update.time_min(currentTime)
+        print("Done")
+    
     # Every 10 minutes
     if (int(currentTime.timestamp()) - 600) > last10mTime:
         last10mTime = int(currentTime.timestamp())
@@ -214,6 +224,9 @@ while mainLoop:
     #Daily
     if currentTime.strftime("%a") != last1dTime:
         last1dTime = currentTime.strftime("%a")
+        print("Updating Current Date... ", end='')
+        time_update.year_month_day(currentTime)
+        print("Done")
         
         print("Updating Historic Weather data... ", end='')
         s = SolarPowerNow.SolarPower()
@@ -221,12 +234,12 @@ while mainLoop:
         s.updateHistoricSolarPowerGeneration()
         print("Done")
         
-        print("Updting Historic Heating power Simulation...", end='')
+        print("Updating Historic Heating power Simulation...", end='')
         hs = heatingSimulation.heatingPowerSimulation()
         hs.updateHeatingSimulationData()
         print("Done")
         
-        print("Updting Historic Power Prices...", end='')
+        print("Updating Historic Power Prices...", end='')
         pp = powerPrices.powerPrices()
         pp.updateHistoricData()
         print("Done")
