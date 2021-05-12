@@ -32,4 +32,5 @@ fi
 
 #run init/main function
 sudo python3 /home/pi/COT/DataProject/Main.py
+sudo python3 /home/pi/COT/DataProject/mainM.py
 
