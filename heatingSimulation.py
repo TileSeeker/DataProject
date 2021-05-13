@@ -6,122 +6,10 @@ Created on Fri Apr 30 15:15:17 2021
 """
 import pandas as pd
 import datetime
+import roomParameters
 
-defaultRoomParameters = {
-    # Windows = 1m * 1.2m = 1.2m^2
-    # Doors = 1.63m^2
-    # Ceiling height = 2.3m
-    
-    
-    
-    "0" : {"roomName" : "outside", "maxCapacity" : 12000000000, "peopleInRoom" : 8000000000, "tempSV" : 0, "tempPV" : 0, "area":0, "areaOverlap":{}},
-    "1" : {"roomName" : "toilet", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 28, "tempPV" : 0, "area":2.5, 
-           "areaOverlap":{
-               "0":{"outside_wall":2.873}, 
-               "2":{"inside_wall":4.4}, 
-               "4":{"inside_wall":5.854, "door":1.63},
-                         }
-          },
-    
-    "2" : {"roomName" : "bathroom", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 28, "tempPV" : 0, "area":3,
-           "areaOverlap":{
-               "0":{"outside_wall":6.8875}, 
-               "1":{"inside_wall":4.4}, 
-               "4":{"inside_wall":1.82, "door":1.63},
-               "10":{"inside_wall":1.4375}
-                         }
-          },
-    
-    "3" : {"roomName" : "kitchen", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 21, "tempPV" : 0, "area":8,
-            "areaOverlap":{
-               "0":{"outside_wall":10.0625}, 
-               "4":{"inside_wall":4.6, "air":9.2}, 
-               "11":{"inside_wall":4.6},
-                        }
-           },
-    
-    "4" : {"roomName" : "livingroom", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 21, "tempPV" : 0, "area":28.5,
-           "areaOverlap":{
-               "0":{"outside_wall":8.045, "door":1.63, "window":2.4},
-               "1":{"inside_wall":5.854, "door":1.63},
-               "2":{"inside_wall":1.82, "door":1.63},
-               "3":{"inside_wall":4.6, "air":9.2},
-               "5":{"inside_wall":4.025, "door":1.63},
-               "6":{"inside_wall":2.97, "door":1.63},
-               "7":{"inside_wall":9.87, "door":1.63},
-               "8":{"inside_wall":9.87, "door":1.63},
-               "9":{"inside_wall":2.97, "door":1.63},
-               "10":{"inside_wall":4.025, "door":1.63},
-               "11":{"inside_wall":5.37, "door":1.63}
-                         }
-           },
-    
-    "5" : {"roomName" : "bedroom1", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 21, "tempPV" : 0, "area":6,
-           "areaOverlap":{
-               "0":{"outside_wall":11.9, "window":1.2},
-               "4":{"inside_wall":4.025, "door":1.63},
-               "6":{"inside_wall":1.4375},
-               "11":{"inside_wall":1.4375}
-                          }
-           },
-    "6" : {"roomName" : "bedroom2", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 12, "tempPV" : 0, "area":6,
-           "areaOverlap":{
-               "0":{"outside_wall":8.8625, "window":1.2},
-               "4":{"inside_wall":2.97, "door":1.63},
-               "5":{"inside_wall":1.4375},
-               "7":{"inside_wall":6.9}
-                         }
-           },
-    "7" : {"roomName" : "bedroom3", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 21, "tempPV" : 0, "area":6,
-           "areaOverlap":{
-               "0":{"outside_wall":3.4, "window":1.2},
-               "4":{"inside_wall":9.87, "door":1.63},
-               "6":{"inside_wall":6.9}
-                         }
-           },
-    "8" : {"roomName" : "bedroom4", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 21, "tempPV" : 0, "area":6,
-           "areaOverlap":{
-               "0":{"outside_wall":3.4, "window":1.2},
-               "4":{"inside_wall":9.87, "door":1.63},
-               "9":{"inside_wall":6.9}
-                         }
-           },
-    "9" : {"roomName" : "bedroom5", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 21, "tempPV" : 0, "area":6,
-           "areaOverlap":{
-               "0":{"outside_wall":8.8625, "window":1.2},
-               "4":{"inside_wall":2.97, "door":1.63},
-               "8":{"inside_wall":6.9},
-               "10":{"inside_wall":1.4375}
-                         }
-           },
-    "10" : {"roomName" : "bedroom6", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 21, "tempPV" : 0, "area":6,
-            "areaOverlap":{
-                "0":{"outside_wall":11.9, "window":1.2},
-                "2":{"inside_wall":1.4375},
-                "4":{"inside_wall":4.025, "door":1.63},
-                "9":{"inside_wall":1.4375}
-                }
-            },
-    "11" : {"roomName" : "server", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 15, "tempPV" : 0, "area":6, 
-            "areaOverlap":{
-                "0":{"outside_wall":10.0625},
-                "3":{"inside_wall":4.6},
-                "4":{"inside_wall":5.37, "door":1.63},
-                "5":{"inside_wall":1.4375}
-                          }
-            }
-        
-    }
-
-defaultConductivityTable = {
-    "outside_wall":31.3, # outside_wall
-    "inside_wall":4.1, # inside_wall
-    "ceiling":13, #ceiling
-    "floor":12.7, #floor
-    "window":4, # window
-    "door":3, # door
-    "air": 0.25
-        }
+defaultRoomParameters = roomParameters.defaultRoomParameters
+defaultConductivityTable = roomParameters.conductivityTable
 
 class heatingPowerSimulation():
     def __init__(self, rooms=defaultRoomParameters, areaOverlap=None, conductivityTable = defaultConductivityTable):
@@ -309,7 +197,7 @@ if __name__ == "__main__":
     s = heatingPowerSimulation()
     
     data = s.getWeatherDataFromFile()
-    x = s.roomPowerCalc("0", 1577836800)
+    x = s.roomPowerCalc("1", 1577836800)
     print(x)
     #print(s.getRoomTempByTime("1", 1577836800))
     

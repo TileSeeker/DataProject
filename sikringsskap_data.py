@@ -105,27 +105,33 @@ def create_datasheet():
     wb = openpyxl.load_workbook("strømbruk.xlsx")
     todays_date = date.today()
     current_date = str(todays_date.year) + "-" + str(todays_date.month)
-    wb.create_sheet(current_date)
-    sh = wb[current_date]
-    sh.append(headers)
-
-    #sum for each person in kWh
-    sh["Z1"] = "0.001"
-    sh["N2"] = "=SUM(B2:B747)*Z1"
-    sh["O2"] = "=SUM(C2:C747)*Z1"
-    sh["P2"] = "=SUM(D2:D747)*Z1"
-    sh["Q2"] = "=SUM(E2:E747)*Z1"
-    sh["R2"] = "=SUM(F2:F747)*Z1"
-    sh["S2"] = "=SUM(G2:G747)*Z1"
     
-    #sum for each person in NOK
-    sh["AA1"] = "0.01"
-    sh["T2"] = "=SUM(H2:H747)*AA1"
-    sh["U2"] = "=SUM(I2:I747)*AA1"
-    sh["V2"] = "=SUM(J2:J747)*AA1"
-    sh["W2"] = "=SUM(K2:K747)*AA1"
-    sh["X2"] = "=SUM(L2:L747)*AA1"
-    sh["Y2"] = "=SUM(M2:M747)*AA1"
+    if str(current_date) in wb.sheetnames:
+        print("Sheet already exsist")
+        
+    else:
+        wb.create_sheet(current_date)
+        sh = wb[current_date]
+        sh.append(headers)
+    
+        #sum for each person in kWh
+        sh["Z1"] = "0.001"
+        sh["N2"] = "=SUM(B2:B747)*Z1"
+        sh["O2"] = "=SUM(C2:C747)*Z1"
+        sh["P2"] = "=SUM(D2:D747)*Z1"
+        sh["Q2"] = "=SUM(E2:E747)*Z1"
+        sh["R2"] = "=SUM(F2:F747)*Z1"
+        sh["S2"] = "=SUM(G2:G747)*Z1"
+        
+        #sum for each person in NOK
+        sh["AA1"] = "0.01"
+        sh["T2"] = "=SUM(H2:H747)*AA1"
+        sh["U2"] = "=SUM(I2:I747)*AA1"
+        sh["V2"] = "=SUM(J2:J747)*AA1"
+        sh["W2"] = "=SUM(K2:K747)*AA1"
+        sh["X2"] = "=SUM(L2:L747)*AA1"
+        sh["Y2"] = "=SUM(M2:M747)*AA1"
+        print("New Sheet Created")
 
 
     wb.save("strømbruk.xlsx")
