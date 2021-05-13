@@ -21,6 +21,7 @@ sudo pip3 install openpyxl
 sudo apt-get install libatlas-base-dev -y
 
 #run init/main function
-sudo python3 /home/pi/COT/DataProject/Main.py
-sudo python3 /home/pi/COT/DataProject/mainM.py
+
+sudo python3 /home/pi/DataProject/Main.py
+sudo python3 /home/pi/DataProject/mainM.py
 
