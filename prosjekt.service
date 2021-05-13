@@ -4,7 +4,9 @@ Wants=network-online.target
 After=network.target
 
 [Service]
-ExecStart =/home/pi/DataProject/module_loader.sh
+ExecStart =/usr/bin/module_loader.sh
+StandardInput=journal+console
+StandardOutput=journal+console
 
 [Install]
 WantedBy = multi-user.target
