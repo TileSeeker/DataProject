@@ -6,6 +6,7 @@ Created on Wed May 12 15:48:02 2021
 """
 import pandas as pd
 import datetime
+import heatingSimulation
 
 defaultRooms = {
     "0" : {"roomName" : "outside", "maxCapacity" : 12000000000, "peopleInRoom" : 8000000000, "tempSV" : 0, "tempPV" : 0},
@@ -66,7 +67,7 @@ class userPowerConsumption():
     def writeWeatherDataToFile(self, data, path="newWeatherData.csv"):
         data.to_csv(path, index=False)
         
-    def updateHistoricUserConsumption(self):
+    def updateHistoricUserConsumption(self, returnC=False):
 
         data = self.getWeatherDataFromFile()
         tt = self.getUserHabitsFromFile()
@@ -109,21 +110,45 @@ class userPowerConsumption():
         data.loc[:, "shared_NOK"] = data.loc[:, "shared_power"]*10**(-6)*data.loc[:, "power_prices[NOK/MWh]"]      
         
         self.writeWeatherDataToFile(data)   
-
-        return [data, tt]
+        if returnC:
+            return [data, tt]
     
-    def currentUserConsumption(self):
+    def curentPowerConsumption(self):
         now = datetime.datetime.now()
-        hour = datetime.datetime.strptime(now, "%H")
-        print(hour)
+        hour = int(now.strftime("%H"))
+        tt = self.getUserHabitsFromFile()
+
+        userPower = 0
+        for i in self.users:
+            name = self.users[i]['name']
+            userPower = userPower + self.PC[tt.loc[hour, f"{name}_activity"]]["power"]
+        
+        
+        data = self.getWeatherDataFromFile()
+        dataHourIndex = pd.to_datetime(data["dt"], unit='s').dt.strftime('%H').astype(int)
+        
+        
+        
+        timestamp = int(now.timestamp())
+        roomPower = 0
+        for i in self.rooms:
+            if i == '0':
+                continue
+            
+            print((i, timestamp))
+            roomPower = heatingSimulation.heatingPowerSimulation().roomPowerCalc(i, timestamp)
+            print(roomPower)
+        power = userPower + roomPower
+        return power
         
     
     def currentUserLocation(self):
         pass
     
+    
 if __name__ == "__main__":
     p = userPowerConsumption()
     
-    
-    
-    data, tt = p.updateHistoricUserConsumption()
+    curentPower = p.curentPowerConsumption()
+    print(curentPower)
+    #data, tt = p.updateHistoricUserConsumption(returnC=True)
