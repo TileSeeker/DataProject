@@ -112,43 +112,21 @@ class userPowerConsumption():
         self.writeWeatherDataToFile(data)   
         if returnC:
             return [data, tt]
-    
-    def curentPowerConsumption(self):
-        now = datetime.datetime.now()
-        hour = int(now.strftime("%H"))
-        tt = self.getUserHabitsFromFile()
-
-        userPower = 0
-        for i in self.users:
-            name = self.users[i]['name']
-            userPower = userPower + self.PC[tt.loc[hour, f"{name}_activity"]]["power"]
         
         
+    def recentPowerPrice(self):
+        # Returnerer den siste registrerte strømprisen i øre/kWh 
         data = self.getWeatherDataFromFile()
-        dataHourIndex = pd.to_datetime(data["dt"], unit='s').dt.strftime('%H').astype(int)
         
-        
-        
-        timestamp = int(now.timestamp())
-        roomPower = 0
-        for i in self.rooms:
-            if i == '0':
-                continue
-            
-            print((i, timestamp))
-            roomPower = heatingSimulation.heatingPowerSimulation().roomPowerCalc(i, timestamp)
-            print(roomPower)
-        power = userPower + roomPower
-        return power
-        
-    
-    def currentUserLocation(self):
-        pass
-    
+        lastPos = len(data["dt"])-1
+        recentPowerPrice = round(data.loc[lastPos, "power_prices[NOK/MWh]"] * 10**(-1), 3)
+        return recentPowerPrice
+
     
 if __name__ == "__main__":
     p = userPowerConsumption()
-    
-    curentPower = p.curentPowerConsumption()
-    print(curentPower)
+    x = p.recentPowerPrice()
+    print(x)
+    print(type(x))
+
     #data, tt = p.updateHistoricUserConsumption(returnC=True)

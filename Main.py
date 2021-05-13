@@ -4,8 +4,6 @@ Created on Fri Apr 23 12:07:36 2021
 
 @author: peter
 """
-
-import time
 import datetime
 
 import Signals as s
@@ -15,6 +13,7 @@ import heatingSimulation
 import powerPrices
 import time_update
 import forbruksModell
+import sikringsskap_data
 
 maxHouseCapacity = 18
 maxGuestsPrPersion = 2
@@ -167,9 +166,9 @@ def updateInit():
 def updateDashboard():
     dashboardToken = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk1In0.9bD-g6Gi40yjEiEYGOY1eoWl0wEuAZZN67yzS5gYOQs"
     
-    #Update PowerCost in NOK/MWh
+    #Update PowerCost in øre/kWh
     powerPriceNow_key = 1753
-    powerPriceNow = powerPrices.SolarPower.getSolarPowerNow()
+    powerPriceNow = forbruksModell.userPowerConsumption().recentPowerPrice()
     s.Signal(powerPriceNow_key, dashboardToken).write(powerPriceNow)
     
     
@@ -178,7 +177,7 @@ def updateDashboard():
     
     #SolarPanel Production
     solarPP_key=2411
-    solarPanelPower = SolarPowerNow.SolarPower.getSolarPowerNow()
+    solarPanelPower = SolarPowerNow.SolarPower().getSolarPowerNow()
     s.Signal(solarPP_key, dashboardToken).write(solarPanelPower)
     #Temp
     
@@ -242,6 +241,10 @@ while mainLoop:
     #Hourly
     if currentTime.strftime("%H") != last1hTime:
         last1hTime = currentTime.strftime("%H")
+        
+        sikringsskap_data
+        sikringsskap_data
+        
         #print(last1hTime)
     
     #Daily
@@ -277,6 +280,13 @@ while mainLoop:
     
     # Monthly
     if currentTime.strftime("%b") != last1MTime:
+        # Getting live power data from house fuse box
+        sikringsskap_data.get_store_data()
+        
+        # Convertig power to NOK and uploading to cloud
+        sikringsskap_data.kWh_to_NOK_upload()
+        
+        
         last1MTime = currentTime.strftime("%b")
         #print(last1MTime)
     
