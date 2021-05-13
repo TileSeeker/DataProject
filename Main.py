@@ -5,6 +5,7 @@ Created on Fri Apr 23 12:07:36 2021
 @author: peter
 """
 import datetime
+import time
 
 import Signals as s
 import booking
@@ -14,32 +15,11 @@ import powerPrices
 import time_update
 import forbruksModell
 import sikringsskap_data
-
-maxHouseCapacity = 18
-maxGuestsPrPersion = 2
-
-rooms = {
-    "0" : {"roomName" : "outside", "maxCapacity" : 12000000000, "peopleInRoom" : 8000000000, "tempSV" : 0, "tempPV" : 0},
-    "1" : {"roomName" : "toilet", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "2" : {"roomName" : "bathroom", "maxCapacity" : 1, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "3" : {"roomName" : "kitchen", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "4" : {"roomName" : "livingroom", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "5" : {"roomName" : "bedroom1", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "6" : {"roomName" : "bedroom2", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "7" : {"roomName" : "bedroom3", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "8" : {"roomName" : "bedroom4", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "9" : {"roomName" : "bedroom5", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-    "10" : {"roomName" : "bedroom6", "maxCapacity" : 3, "peopleInRoom" : 0, "tempSV" : 0, "tempPV" : 0},
-        }
-
-users = {
-    "1" : {"name": "Person1", "location":"0", "guests":"0", "activity":"0"},
-    "2" : {"name": "Person2", "location":"0", "guests":"0", "activity":"0"},
-    "3" : {"name": "Person3", "location":"0", "guests":"0", "activity":"0"},
-    "4" : {"name": "Person4", "location":"0", "guests":"0", "activity":"0"},
-    "5" : {"name": "Person5", "location":"0", "guests":"0", "activity":"0"},
-    "6" : {"name": "Person6", "location":"0", "guests":"0", "activity":"0"}
-    }
+import roomParameters
+maxHouseCapacity = roomParameters.maxHouseCapacity
+maxGuestsPrPersion = roomParameters.maxGuestsPrPersion
+rooms = roomParameters.defaultRoomParameters
+users = roomParameters.defaultUsers
 
 # Defining time function
 last1mTime = 0# Previous 10m function
@@ -164,10 +144,11 @@ def updateInit():
     print("")
     
 def updateDashboard():
+    #The user that is used as a dashboard is Person1
     dashboardToken = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk1In0.9bD-g6Gi40yjEiEYGOY1eoWl0wEuAZZN67yzS5gYOQs"
     
     #Update PowerCost in øre/kWh
-    powerPriceNow_key = 1753
+    powerPriceNow_key = "1753"
     powerPriceNow = forbruksModell.userPowerConsumption().recentPowerPrice()
     s.Signal(powerPriceNow_key, dashboardToken).write(powerPriceNow)
     
@@ -175,14 +156,30 @@ def updateDashboard():
     #PowerUse
     
     
+    
     #SolarPanel Production
-    solarPP_key=2411
+    solarPP_key="2411"
     solarPanelPower = SolarPowerNow.SolarPower().getSolarPowerNow()
     s.Signal(solarPP_key, dashboardToken).write(solarPanelPower)
-    #Temp
     
-    #
-    pass
+    #Weather
+    currentWeather = SolarPowerNow.SolarPower().getWeatherNow()
+    
+    windSpeed = currentWeather["wind"]["speed"]
+    temp = currentWeather["main"]["temp"] -273.15
+    weatherID = currentWeather["weather"][0]["id"]
+    
+    windSpeed_key = "12054"
+    s.Signal(windSpeed_key, dashboardToken).write(windSpeed)
+    
+    
+    Global_variabler2_Token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NjcwIn0.4GshD9I6ZBE0roZzIsjHpIBLasIbH0JLc3TRhJwxJg8"
+    weatherID_key = "39"
+    s.Signal(weatherID_key, Global_variabler2_Token).write(weatherID)
+    
+    temp_key = "20183"
+    s.Signal(temp_key, Global_variabler2_Token).write(temp)
+    
 
 
 mainLoop = True
@@ -203,9 +200,8 @@ while mainLoop:
     
     # Check if there are any paramters that have been changed, and need updating
     parmu = str(parameterUpdate.get())
-    print("parmu =", end="")
     #parmu = "112"
-    print(parmu)
+    #print(parmu)
     
     # Booking
     if parmu[0] == "2":
@@ -242,8 +238,15 @@ while mainLoop:
     if currentTime.strftime("%H") != last1hTime:
         last1hTime = currentTime.strftime("%H")
         
-        sikringsskap_data
-        sikringsskap_data
+        # Getting live power data from house fuse box
+        print("Getting power from fuse-box...", end='')
+        sikringsskap_data.get_store_data()
+        print("Done")
+        
+        # Convertig power to NOK and uploading to cloud
+        print("Uploading power cost to CoT...", end='')
+        sikringsskap_data.kWh_to_NOK_upload()
+        print("Done")
         
         #print(last1hTime)
     
@@ -275,23 +278,20 @@ while mainLoop:
         fm.updateHistoricUserConsumption()
         print("Done")
         
-        
         #print(last1dTime)
     
     # Monthly
     if currentTime.strftime("%b") != last1MTime:
-        # Getting live power data from house fuse box
-        sikringsskap_data.get_store_data()
         
-        # Convertig power to NOK and uploading to cloud
-        sikringsskap_data.kWh_to_NOK_upload()
-        
-        
+        # Create new sheet in excel document each month.
+        print("Creating new monthly power sheet... ", end='')
+        sikringsskap_data.create_datasheet()
         last1MTime = currentTime.strftime("%b")
         #print(last1MTime)
     
     
-    mainLoop = False
+    time.sleep(3)
+    mainLoop = True
     
     
     
