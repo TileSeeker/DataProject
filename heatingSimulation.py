@@ -145,13 +145,13 @@ class heatingPowerSimulation():
         
         for i in self.rooms[room_ID]["areaOverlap"]:
             # i = rooms that are in direct connection with the main room
-                print("Room_ID: ", end="")
-                print(i)
+                #print("Room_ID: ", end="")
+                #print(i)
 
             #if self.rooms[room_ID]["areaOverlap"][i]:
                 for j in self.rooms[room_ID]["areaOverlap"][i]:
-                    print("Room Name:", end="")
-                    print(j)
+                    #print("Room Name:", end="")
+                    #print(j)
                     
                     
                     """
@@ -170,10 +170,10 @@ class heatingPowerSimulation():
                         otherRoomTemp = self.getRoomTempByTime(i, timestamp)
                         
                     deltaT = (roomTemp - otherRoomTemp)
-                    print(deltaT)
+                    #print(deltaT)
     
                     energy =  energy + 5.7 * area * deltaT / conductivity
-                    print(energy)
+                    #print(energy)
                     
         #Add energy loss through ceiling and floor
         energy = energy + 5.7 * ( (roomTemp - self.groundTemp) * floorArea / floorConductivity  + (roomTemp - self.ceilingTemp) * ceilingArea / ceilingConductivity)
@@ -191,7 +191,7 @@ class heatingPowerSimulation():
             hour = pd.to_datetime(data["dt"], unit='s').dt.strftime("%H").astype(int)
                 
         temp = self.roomTempTimetable.loc[hour, roomName]
-        print(temp)
+        #print(temp)
         return temp
         
     
@@ -309,7 +309,8 @@ if __name__ == "__main__":
     s = heatingPowerSimulation()
     
     data = s.getWeatherDataFromFile()
-    #print(s.roomPowerCalc("1", 1577836800))
+    x = s.roomPowerCalc("0", 1577836800)
+    print(x)
     #print(s.getRoomTempByTime("1", 1577836800))
     
     #roomTempTimetable = s.getRoomTempTimetableFromFile()

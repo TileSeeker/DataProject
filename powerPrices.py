@@ -113,6 +113,11 @@ class powerPrices():
         if returnC:
             return weatherData
         
+    def powerPriceNow(self):
+        data = self.getWeatherDataFromFile()
+        powerPrice = data["power_prices[NOK/MWh]"][len(data["dt"])-1]
+        return powerPrice
+        
 
 if __name__ == "__main__":
     p = powerPrices()
@@ -120,4 +125,5 @@ if __name__ == "__main__":
     
     #r2 = p.getPowerPricesFromServer()
     #ppData = p.getPowerPricesFromServer()
-    newData= p.updateHistoricData(returnC=True)
+    #newData= p.updateHistoricData(returnC=True)
+    print(p.powerPriceNow())

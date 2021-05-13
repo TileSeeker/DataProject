@@ -14,6 +14,7 @@ import SolarPowerNow
 import heatingSimulation
 import powerPrices
 import time_update
+import forbruksModell
 
 maxHouseCapacity = 18
 maxGuestsPrPersion = 2
@@ -162,6 +163,27 @@ def updateInit():
     
     print("")
     print("")
+    
+def updateDashboard():
+    dashboardToken = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk1In0.9bD-g6Gi40yjEiEYGOY1eoWl0wEuAZZN67yzS5gYOQs"
+    
+    #Update PowerCost in NOK/MWh
+    powerPriceNow_key = 1753
+    powerPriceNow = powerPrices.SolarPower.getSolarPowerNow()
+    s.Signal(powerPriceNow_key, dashboardToken).write(powerPriceNow)
+    
+    
+    #PowerUse
+    
+    
+    #SolarPanel Production
+    solarPP_key=2411
+    solarPanelPower = SolarPowerNow.SolarPower.getSolarPowerNow()
+    s.Signal(solarPP_key, dashboardToken).write(solarPanelPower)
+    #Temp
+    
+    #
+    pass
 
 
 mainLoop = True
@@ -214,6 +236,7 @@ while mainLoop:
     # Every 10 minutes
     if (int(currentTime.timestamp()) - 600) > last10mTime:
         last10mTime = int(currentTime.timestamp())
+        updateDashboard()
         #print(datetime.datetime.utcfromtimestamp(last10mTime).strftime("%M"))
     
     #Hourly
@@ -243,6 +266,12 @@ while mainLoop:
         pp = powerPrices.powerPrices()
         pp.updateHistoricData()
         print("Done")
+        
+        print("Updating Historic User power...", end='')
+        fm = forbruksModell.userPowerConsumption()
+        fm.updateHistoricUserConsumption()
+        print("Done")
+        
         
         #print(last1dTime)
     
