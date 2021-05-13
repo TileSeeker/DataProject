@@ -9,7 +9,8 @@ cd DataProject
 
 
 aktiver shell script:
-chmod +x module_loader.sh.
+sudo mv module_loader.sh /usr/bin/module_loader.sh
+chmod +x /usr/bin/module_loader.sh
 
 
 move the service file to the system folder:
@@ -22,7 +23,6 @@ sudo systemctl enable prosjekt.service
 
 kjør med en gang:
 sudo systemctl start prosjekt.service
-
 
 
 
