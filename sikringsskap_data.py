@@ -11,6 +11,8 @@ import openpyxl
 from datetime import datetime
 from datetime import date
 
+from forbruksModell import userPowerConsumption
+
 #CoT-sikringsskap
 token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1ODMyIn0.1sZoVBXJzmhJ71UiSxFxPcZ-3FufHWOO1UokVe0IBwA"
 key_rom1 = "24060"
@@ -73,9 +75,13 @@ def get_store_data():
     signal5 = Signal(key_rom5, token).get()
     signal6 = Signal(key_rom6, token).get()
     time_now = datetime.now().strftime("%d %H:%M:%S")
+    
+    
     #dagens_strømpris = strømpris("D:\.drivere\geckodriver.exe")
     #dagens_strømpris = dagens_strømpris.get()
-    dagens_strømpris = 22.5 # ore/kWh
+    dagens_strømpris = userPowerConsumption().recentPowerPrice()
+    
+    #dagens_strømpris = 22.5 # ore/kWh
     #strømpris*wh*10
     ore1 = (signal1*0.001)*dagens_strømpris
     ore2 = (signal2*0.001)*dagens_strømpris
@@ -104,7 +110,7 @@ def create_datasheet():
     sh.append(headers)
 
     #sum for each person in kWh
-    sh["Z1"] = "0,001"
+    sh["Z1"] = "0.001"
     sh["N2"] = "=SUM(B2:B747)*Z1"
     sh["O2"] = "=SUM(C2:C747)*Z1"
     sh["P2"] = "=SUM(D2:D747)*Z1"
@@ -113,7 +119,7 @@ def create_datasheet():
     sh["S2"] = "=SUM(G2:G747)*Z1"
     
     #sum for each person in NOK
-    sh["AA1"] = "0,01"
+    sh["AA1"] = "0.01"
     sh["T2"] = "=SUM(H2:H747)*AA1"
     sh["U2"] = "=SUM(I2:I747)*AA1"
     sh["V2"] = "=SUM(J2:J747)*AA1"
@@ -124,3 +130,6 @@ def create_datasheet():
 
     wb.save("strømbruk.xlsx")
     
+if __name__ == "__main__":
+    create_datasheet()
+    get_store_data()

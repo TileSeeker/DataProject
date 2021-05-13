@@ -5,24 +5,8 @@ Created on Thu Apr 29 10:46:46 2021
 @author: peter
 """
 
-from selenium import webdriver
-from bs4 import BeautifulSoup
 import requests
-import json
 import pandas as pd
-
-"""
-url = "https://www.nordpoolgroup.com/historical-market-data/"
-absXpath = "/html/body/div[4]/div/div/div[2]/div/div/div[1]/div/table/tbody/tr[6]/td[1]/a"
-
-driver = webdriver.Firefox(executable_path="C:\Program Files\Mozilla Firefox\geckodriver.exe")
-driver.get(url)
-driver.find_element_by_xpath(absXpath).click()
-
-"""
-
-
-
 
 class powerPrices():
     def __init__(self):
