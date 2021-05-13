@@ -1,0 +1,10 @@
+
+[Unit]
+Wants=network-online.target
+After=network.target
+
+[Service]
+ExecStart =/home/pi/DataProject/module_loader.sh
+
+[Install]
+WantedBy = multi-user.target
