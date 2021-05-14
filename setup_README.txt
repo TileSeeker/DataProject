@@ -17,11 +17,10 @@ move the service file to the system folder:
 sudo mv prosjekt.service /etc/systemd/system/prosjekt.service
 
 
-aktiver sysd:
-oppstart:
+activate systemd to run on startup:
 sudo systemctl enable prosjekt.service
 
-kjør med en gang:
+run system right now:
 sudo systemctl start prosjekt.service
 
 
