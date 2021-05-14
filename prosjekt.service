@@ -1,7 +1,7 @@
 
 [Unit]
 Wants=network-online.target
-After=network.target
+After=network-online.target
 
 [Service]
 ExecStart =/usr/bin/module_loader.sh
