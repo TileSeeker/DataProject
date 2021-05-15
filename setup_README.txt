@@ -9,7 +9,6 @@ cd DataProject
 
 
 aktiver shell script:
-sudo mv module_loader.sh /usr/bin/module_loader.sh
 chmod +x /usr/bin/module_loader.sh
 
 

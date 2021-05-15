@@ -4,7 +4,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart =/usr/bin/module_loader.sh
+ExecStart =/home/pi/DataProject/module_loader.sh
 StandardInput=journal+console
 StandardOutput=journal+console
 
