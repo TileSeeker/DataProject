@@ -79,8 +79,6 @@ class SolarPower:
             
         return 1
     
-    
-    
     def irradiationCoefficient(self, timestamp = None, data=None):
         return 1
     
