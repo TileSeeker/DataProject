@@ -8,19 +8,20 @@ import pandas as pd
 import datetime
 import heatingSimulation
 import roomParameters
+import Signals as s
 
 
-#Room and user parameters are retrieved from the parameters file
-defaultRooms = roomParameters.defaultRoomParameters
-defaultUsers = roomParameters.defaultUsers
-defaultActivityPowerConsumption = roomParameters.ActivityPowerConsumption
+
+
 
 
 class userPowerConsumption():
-    def __init__(self, rooms=defaultRooms, users=defaultUsers, activityPowerConsumption=defaultActivityPowerConsumption):
-        self.rooms = rooms
-        self.users = users
-        self.PC = activityPowerConsumption
+    def __init__(self):
+        
+        #Room and user parameters are retrieved from the parameters file
+        self.rooms = roomParameters.defaultRoomParameters
+        self.users = roomParameters.defaultUsers
+        self.PC = roomParameters.ActivityPowerConsumption
 
     def getWeatherDataFromFile(self):
         data = pd.read_csv("newWeatherData.csv", na_filter=False, dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"]).drop_duplicates(subset=["dt"])
@@ -72,8 +73,8 @@ class userPowerConsumption():
         data.loc[:, "shared_power"] = 0
         data.loc[:, "shared_NOK"] = 0
         for i in self.rooms:
-            if i < '5':
-                data.loc[:, "shared_power"] = data.loc[:, "shared_power"] + data.loc[:, f"{self.rooms[i]['roomName']}_heating_power [W/h]"]
+            if self.rooms[i]["powerBilling"] == 'public':
+                data.loc[:, "shared_power"] = data.loc[:, "shared_power"] + pd.to_numeric(data.loc[:, f"{self.rooms[i]['roomName']}_heating_power [W/h]"], errors='coerce')
         data.loc[:, "shared_NOK"] = data.loc[:, "shared_power"]*10**(-6)*data.loc[:, "power_prices[NOK/MWh]"]      
         
         self.writeWeatherDataToFile(data)   
@@ -88,11 +89,31 @@ class userPowerConsumption():
         lastPos = len(data["dt"])-1
         recentPowerPrice = round(data.loc[lastPos, "power_prices[NOK/MWh]"] * 10**(-1), 3)
         return recentPowerPrice
+    
+    def updateUserLocation(self):
+        """
+        Henter henter lokasjon til brukerne fra timeplanen, og oppdaterer den på CoT
+        """
+        hour = int(datetime.datetime.now().strftime("%H"))
+        tt = self.getUserHabitsFromFile()
+        
+        for i in self.users:
+            location = str(tt.loc[hour, f"{self.users[i]['name']}_location"])
+            roomParameters.defaultUsers[i]["location"] = location
+            
+        users = roomParameters.defaultUsers
+        s.Signal("19808", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk1In0.9bD-g6Gi40yjEiEYGOY1eoWl0wEuAZZN67yzS5gYOQs").write(users["1"]["location"])
+        s.Signal("24769", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk2In0.zADZlTeWjpJpbEmG_d1mcw07mDtT9ZJ30sMDtU1ex80").write(users["2"]["location"])
+        s.Signal("20536", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk3In0.es9iHyTEfrYM3ksN0QWtiULhRlQEcwatXWHFc5_fscc").write(users["3"]["location"])
+        s.Signal("3430", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk4In0.WP5pJqMaPL8AwEEii2TMFys9kQUabpl2iztyxBRdLuc").write(users["4"]["location"])
+        s.Signal("2105", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk5In0.fbZfuVuDshnMdUMW6EXrB6fSYhtdq0l2-j92h6AtlbM").write(users["5"]["location"])
+        s.Signal("10015", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NjAwIn0.nGZXNRU34wVFtzex9tS-0gVky_ppn3Gjmj_riA4oLZY").write(users["6"]["location"])
 
     
 if __name__ == "__main__":
     p = userPowerConsumption()
     x = p.recentPowerPrice()
     print(x)
-
     data, tt = p.updateHistoricUserConsumption(returnC=True)
+
+    p.updateUserLocation()

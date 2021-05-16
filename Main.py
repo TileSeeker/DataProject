@@ -55,6 +55,7 @@ def fireCheck():
 
 def updateUserLocation():
     print("Downloading user location data... ", end=" ")
+    users = roomParameters.defaultUsers
     users["1"]["location"] = str(s.Signal("19808", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk1In0.9bD-g6Gi40yjEiEYGOY1eoWl0wEuAZZN67yzS5gYOQs").get())
     users["2"]["location"] = str(s.Signal("24769", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk2In0.zADZlTeWjpJpbEmG_d1mcw07mDtT9ZJ30sMDtU1ex80").get())
     users["3"]["location"] = str(s.Signal("20536", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1NTk3In0.es9iHyTEfrYM3ksN0QWtiULhRlQEcwatXWHFc5_fscc").get())
@@ -66,6 +67,7 @@ def updateUserLocation():
     
     
 def updateRoomOccupancy ():
+    users = roomParameters.defaultUsers
     print("Updating room occupancy... ", end=" ")
     for i in range(len(rooms)):
         rooms[str(i)]["peopleInRoom"] = 0
@@ -91,6 +93,7 @@ def updateRoomOccupancy ():
     print("Done")
 
 def updateRoomMaxCapacity():
+    
     print("Uploading Room Capacity... ", end=" ")
     s.Signal("1425", roomMaxCapacityToken).write(rooms["1"]["maxCapacity"]) # Toilet
     s.Signal("22847", roomMaxCapacityToken).write(rooms["2"]["maxCapacity"]) # Bathroom
@@ -111,12 +114,14 @@ def updateRoomMaxCapacity():
 
 def updateGuestData():
     print("Downloading guest data... ", end=" ")
+    users = roomParameters.defaultUsers
     users["1"]["guests"] = fillStrToLen(s.Signal("24425", guestToken).get(), 2)[0]
     users["2"]["guests"] = fillStrToLen(s.Signal("10799", guestToken).get(), 2)[0]
     users["3"]["guests"] = fillStrToLen(s.Signal("9663", guestToken).get(), 2)[0]
     users["4"]["guests"] = fillStrToLen(s.Signal("2277", guestToken).get(), 2)[0]
     users["5"]["guests"] = fillStrToLen(s.Signal("31631", guestToken).get(), 2)[0]
     users["6"]["guests"] = fillStrToLen(s.Signal("27545", guestToken).get(), 2)[0]       
+    roomParameters.defaultUsers = users
     print("Done")
     
 def bookRoom():
@@ -127,14 +132,14 @@ def bookRoom():
     else:
         print("Room was not booked")
 
-def updateHistoricData():
-    pass 
 
 def updateInit():
     print("Initialising Global Parameters")
     print("")
     updateRoomMaxCapacity()
-    updateHistoricData()
+    
+    #Update Room Set-Temperature
+    
     print("")
     print("Global Parameters Initialised")
     print("")
@@ -190,6 +195,12 @@ print("Program Start")
 
 while mainLoop:
     currentTime = datetime.datetime.now()
+    maxHouseCapacity = roomParameters.maxHouseCapacity
+    maxGuestsPrPersion = roomParameters.maxGuestsPrPersion
+    rooms = roomParameters.defaultRoomParameters
+    users = roomParameters.defaultUsers
+
+    
     
     # Upload global variables to CoT
     if runUpdateInit:
@@ -198,10 +209,8 @@ while mainLoop:
     
     fireSignal.get()
     
-    # Check if there are any paramters that have been changed, and need updating
+    # Check if there are any parameters that have been changed, and need updating
     parmu = str(parameterUpdate.get())
-    #parmu = "112"
-    #print(parmu)
     
     # Booking
     if parmu[0] == "2":
@@ -214,7 +223,6 @@ while mainLoop:
     # Guest Status Change    
     if parmu[2] == "2":
         updateGuestData()
-        pass
         
     if parmu != "111":
         parameterUpdate.write(111)
@@ -232,7 +240,6 @@ while mainLoop:
     if (int(currentTime.timestamp()) - 600) > last10mTime:
         last10mTime = int(currentTime.timestamp())
         updateDashboard()
-        #print(datetime.datetime.utcfromtimestamp(last10mTime).strftime("%M"))
     
     #Hourly
     if currentTime.strftime("%H") != last1hTime:
@@ -248,7 +255,16 @@ while mainLoop:
         sikringsskap_data.kWh_to_NOK_upload()
         print("Done")
         
-        #print(last1hTime)
+        #Updating User location according to timetable
+        print("Updating user location", end='')
+        forbruksModell.userPowerConsumption().updateUserLocation()
+        
+        print("Done")
+        
+        
+        
+        
+        
     
     #Daily
     if currentTime.strftime("%a") != last1dTime:
@@ -258,9 +274,9 @@ while mainLoop:
         print("Done")
         
         print("Updating Historic Weather data... ", end='')
-        s = SolarPowerNow.SolarPower()
-        newWeatherData = s.updateHistoricWeatherData()
-        s.updateHistoricSolarPowerGeneration()
+        SP = SolarPowerNow.SolarPower()
+        newWeatherData = SP.updateHistoricWeatherData()
+        SP.updateHistoricSolarPowerGeneration()
         print("Done")
         
         print("Updating Historic Heating power Simulation...", end='')
@@ -278,7 +294,6 @@ while mainLoop:
         fm.updateHistoricUserConsumption()
         print("Done")
         
-        #print(last1dTime)
     
     # Monthly
     if currentTime.strftime("%b") != last1MTime:
@@ -287,11 +302,10 @@ while mainLoop:
         print("Creating new monthly power sheet... ", end='')
         sikringsskap_data.create_datasheet()
         last1MTime = currentTime.strftime("%b")
-        #print(last1MTime)
     
     
     time.sleep(3)
-    mainLoop = True
+    mainLoop = False
     
     
     

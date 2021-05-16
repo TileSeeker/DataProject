@@ -165,11 +165,14 @@ def reserve_room(room, userID, startTime_raw, stopTime_raw, startDate_raw=dateti
     stopTime = convert_to_datetime(stopDate_raw, stopTime_raw)
     
     data = {
-    'room':room, 
-    'userID':userID, 
-    'startTime':startTime, 
-    'stopTime':stopTime
+    'room':room, # Room_ID: eks. '1', '2', '3'
+    'userID':userID, # User_ID: eks. '1', '2', '3'
+    'startTime':startTime, # Start time in datetime format
+    'stopTime':stopTime # Stop time in datetime format
             }
+    
+    
+    
     #print(data)
     
     status = check_availability(data, rooms)
@@ -204,5 +207,5 @@ if __name__ == "__main__":
     #print(x)
     #remove_reservation(26)7
     
-    print(reserve_room("3", 1, 1400, 1508, 212, 0))
+    print(reserve_room("3", '1', 1400, 1508, 212, 0))
     
