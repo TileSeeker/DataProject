@@ -159,7 +159,8 @@ class heatingPowerSimulation():
             
             #If the energy leaving the room is positive, use the rooms heating factor. If the energy is negative, use the cooling factor
             data.loc[energy_raw >= 0, f"{roomName}_heating_power [W/h]"] = energy_raw.loc[energy_raw>0] * rooms[i]["heatingFactor"]
-            data.loc[energy_raw < 0, f"{roomName}_heating_power [W/h]"] = energy_raw.loc[energy_raw<0] * rooms[i]["coolingFactor"]            
+            data.loc[energy_raw < 0, f"{roomName}_heating_power [W/h]"] = abs(energy_raw.loc[energy_raw<0] * rooms[i]["coolingFactor"])
+            data.loc[:,  f"{roomName}_heating_power [W/h]"].abs()            
             df.loc[:, f"{roomName}_heating_power [W/h]"] = data.loc[:, f"{roomName}_heating_power [W/h]"]
         
         #Save the new values to the weatherData file

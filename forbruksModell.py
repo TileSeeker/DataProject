@@ -73,8 +73,12 @@ class userPowerConsumption():
         data.loc[:, "shared_power"] = 0
         data.loc[:, "shared_NOK"] = 0
         for i in self.rooms:
+            if self.rooms[i]["roomName"]=="outside":
+                continue
             if self.rooms[i]["powerBilling"] == 'public':
-                data.loc[:, "shared_power"] = data.loc[:, "shared_power"] + pd.to_numeric(data.loc[:, f"{self.rooms[i]['roomName']}_heating_power [W/h]"], errors='coerce')
+                print("public")
+                print(self.rooms[i]["roomName"])
+                data.loc[:, "shared_power"] = data.loc[:, "shared_power"] + pd.to_numeric(data.loc[:, f"{self.rooms[i]['roomName']}_heating_power [W/h]"])
         data.loc[:, "shared_NOK"] = data.loc[:, "shared_power"]*10**(-6)*data.loc[:, "power_prices[NOK/MWh]"]      
         
         self.writeWeatherDataToFile(data)   
