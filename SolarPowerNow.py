@@ -102,11 +102,8 @@ class SolarPower:
        
        for i in range(len(data["dt"])-1):
            timeC = datetime.datetime.utcfromtimestamp(data["dt"][i]).strftime("%m%d%H%M")
-           #print(i)
-           #print(timeC)
            series = iri.loc[iri["dateC"] == int(timeC), "P"]
-           #print(timeC)
-           #print(series)
+
            try:
                power = series.to_list()[0]
            except:
