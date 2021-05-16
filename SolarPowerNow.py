@@ -112,7 +112,7 @@ class SolarPower:
                power = series.to_list()[0]
            
            
-           data.loc[i, "generated_solar_power[Wh]"] = power
+           data.loc[i, "generated_solar_power[Wh]"] = power * self.solarPanelArea
        
        data.loc[:, "generated_solar_power[Wh]"].astype(float)
        """
