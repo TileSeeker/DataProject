@@ -20,6 +20,6 @@ sudo pip3 install numpy
 sudo pip3 install openpyxl
 sudo apt-get install libatlas-base-dev -y
 #run main and mainmeny file
-sudo python3 /home/pi/DataProject/mainM.py &
-sudo python3 /home/pi/DataProject/Main.py
+/usr/bin/python3 /home/pi/DataProject/mainM.py &
+/usr/bin/python3 /home/pi/DataProject/Main.py
 

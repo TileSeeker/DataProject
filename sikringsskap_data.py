@@ -133,3 +133,4 @@ def create_datasheet():
 if __name__ == "__main__":
     create_datasheet()
     get_store_data()
+    kWh_to_NOK_upload()
