@@ -32,15 +32,14 @@ class powerPrices():
         
         #Converting tha data to DataFrame
         df = pd.read_html("powerPricesRaw.xls")[0]
-        
         #Changing column Name
         l = []
         for i in df.columns:
-            l.append(i[2])
+            l.append(i[3])
+
         df.columns = l
-        
         #Changing timestamp
-        df["dt"] = df["Unnamed: 0_level_2"] +" "+ df["Hours"].str[:2]
+        df["dt"] = df["Unnamed: 0_level_3"] +" "+ df["Hours"].str[:2]
         df["dt"] = pd.to_datetime(df["dt"], format="%d-%m-%Y %H")
         df["dt"] = df[['dt']].apply(lambda x: x[0].timestamp(), axis=1).astype(int)
         
@@ -91,7 +90,7 @@ class powerPrices():
         
         #Replace all NaN values, with the value that comes before it
         for i in nanLocation:
-            weatherData.loc[i, "power_prices[NOK/MWh]"] = weatherData.loc[i-1,"power_prices[NOK/MWh]"]
+            weatherData.loc[i, "power_prices[NOK/MWh]"] = (weatherData.loc[i-1,"power_prices[NOK/MWh]"] + weatherData.loc[i+1,"power_prices[NOK/MWh]"]) / 2
         
         self.writeWeatherDataToFile(weatherData)
         if returnC:
@@ -108,6 +107,6 @@ if __name__ == "__main__":
     data = p.historic_weather
     
     #r2 = p.getPowerPricesFromServer()
-    #ppData = p.getPowerPricesFromServer()
-    #newData= p.updateHistoricData(returnC=True)
+    ppData = p.getPowerPricesFromServer()
+    newData= p.updateHistoricData(returnC=True)
     print(p.powerPriceNow())

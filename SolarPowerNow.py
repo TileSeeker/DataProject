@@ -52,12 +52,15 @@ class SolarPower:
         #data = pd.read_csv("weatherHistoryHourly.csv", dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"])
         data = pd.read_csv("newWeatherData.csv", dtype={"dt": "int64", "clouds_all":"int64"}, parse_dates=["dt_iso"])
         return data
+    
+    def getIridiationDataFromFile(self):
+        irridiationData = pd.read_csv("solarIridiation.csv", dtype={"P":"float64"})
+        return irridiationData
         
     def weatherCoefficient(self, timestamp = None, date = None, row=None, data=None):
         
         if timestamp != None:
             cloud_coverage = row = data.loc[data["dt"] == timestamp, "clouds_all"]
-            #cloud_coverage = float(row["clouds_all"])
             cloudCoefficient = 1-(self.solarPanelMaxCloudLoss*cloud_coverage/100)
             
             return cloudCoefficient
@@ -95,11 +98,33 @@ class SolarPower:
     def updateHistoricSolarPowerGeneration(self):
        data = self.getWeatherDataFromFile()
        data.loc[:,"generated_solar_power[Wh]"] = 0.1
+       iri = self.getIridiationDataFromFile()
        
+       for i in range(len(data["dt"])-1):
+           timeC = datetime.datetime.utcfromtimestamp(data["dt"][i]).strftime("%m%d%H%M")
+           #print(i)
+           #print(timeC)
+           series = iri.loc[iri["dateC"] == int(timeC), "P"]
+           #print(timeC)
+           #print(series)
+           try:
+               power = series.to_list()[0]
+           except:
+               timeC = datetime.datetime.utcfromtimestamp(data["dt"][i-1]).strftime("%m%d%H%M")
+               series = iri.loc[iri["dateC"] == int(timeC), "P"]
+               power = series.to_list()[0]
+           
+           
+           data.loc[i, "generated_solar_power[Wh]"] = power
+       
+       data.loc[:, "generated_solar_power[Wh]"].astype(float)
+       """
        for i in range(len(data["dt"])):
            #data2["generated_solar_power[Wh]"][i] = self.powerCalculationHour(data["dt"][i])
            data.loc[:,"generated_solar_power[Wh]"].iloc[i] = self.powerCalculationHour(row = i, data=data)
            #print(f"{data['generated_solar_power[Wh]'][i]}  =   {self.powerCalculationHour(row = i)}")  
+           
+       """
        data.to_csv("newWeatherData.csv", index=False)
         
        return data
@@ -192,12 +217,15 @@ class SolarPower:
 # When the file is run as main, it wil automatically run several functions to make sure the program works
 if __name__ == "__main__":
 
-    s = SolarPower()
+    sim = SolarPower()
 
-    d = s.updateHistoricWeatherData()
-    data = s.getWeatherDataFromFile() 
-    s.updateHistoricSolarPowerGeneration()
-    e = s.getWeatherNow()
-    f = s.getSolarPowerNow()    
+    d = sim.updateHistoricWeatherData()
+    data = sim.getWeatherDataFromFile() 
+    powerData = sim.updateHistoricSolarPowerGeneration()
+    e = sim.getWeatherNow()
+    f = sim.getSolarPowerNow()   
+
+    
+    I = sim.getIridiationDataFromFile()
 
     
