@@ -3,7 +3,6 @@ systemsetup:
 git download:
 git clone https://github.com/TileSeeker/DataProject.git
 
-
 move to the project folder:
 cd DataProject
 
